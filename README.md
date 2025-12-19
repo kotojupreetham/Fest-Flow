@@ -1,6 +1,6 @@
 🎉 Fest Flow Website
 
-Check out the live site here: Fest Flow Live Demo
+Check out the live site here: https://kotoju-preetham.github.io/Fest-Flow/
 
 Fest Flow is a simple and interactive website designed to showcase events in a modern and attractive way.
 The website helps users explore different events smoothly while scrolling, making it easy and enjoyable to view event details.
