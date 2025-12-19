@@ -12,103 +12,7 @@
     <!-- GSAP -->
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/gsap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.1/dist/ScrollTrigger.min.js"></script>
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js";
-
-const firebaseConfig = {
-    apiKey: "AIzaSyDLwOECnCBLKaM81XAPkPWNncJnb6VYLUo",
-    authDomain: "festflow-10d5c.firebaseapp.com",
-    projectId: "festflow-10d5c",
-    storageBucket: "festflow-10d5c.firebasestorage.app",
-    messagingSenderId: "196497248283",
-    appId: "1:196497248283:web:b4a10ed59b221870dca8be",
-    measurementId: "G-HH6SMETLGJ"
-};
-
-// Initialize Firebase & Firestore
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-async function fetchEvents() {
-    const eventContainer = document.getElementById("eventContainer");
-    const fetchedEvents = [];
-
-    try {
-        // 1. Get all event IDs from the main /events collection
-        const eventsSnapshot = await getDocs(collection(db, "events"));
-        
-        for (const eventDoc of eventsSnapshot.docs) {
-            const eventId = eventDoc.id; // e.g., COLLE-89818
-            
-            // 2. Access the nested path: /events/{event-id}/detail/event
-            const detailRef = collection(db, "events", eventId, "detail", "event", "data"); 
-            // Note: In your example, 's8gZabqgEL9CuWQE4fMl' is the doc ID inside 'event'
-            const detailSnapshot = await getDocs(collection(db, `events/${eventId}/detail/event`));
-
-            detailSnapshot.forEach((doc) => {
-                const data = doc.data();
-                fetchedEvents.push({
-                    title: data.title,
-                    desc: data.description.substring(0, 100) + "...", // Shorten desc
-                    date: data.startingDate,
-                    venue: data.category // Or whatever field holds the venue
-                });
-            });
-        }
-
-        // 3. Clear container and inject cards
-        eventContainer.innerHTML = ""; 
-        renderCards(fetchedEvents);
-
-    } catch (error) {
-        console.error("Error fetching events: ", error);
-    }
-}
-
-function renderCards(eventsList) {
-    const container = document.getElementById("eventContainer");
     
-    eventsList.forEach(event => {
-        const card = document.createElement("div");
-        card.className = "event-card";
-        card.innerHTML = `
-            <h5>${event.title}</h5>
-            <p>${event.desc}</p>
-            <small><b>Date:</b> ${event.date}</small><br>
-            <small><b>Category:</b> ${event.venue}</small><br><br>
-            <button class="btn btn-primary btn-animate">Register</button>
-        `;
-        container.appendChild(card);
-    });
-
-    // 4. Re-run GSAP animations after cards are added to DOM
-    refreshAnimations();
-}
-
-function refreshAnimations() {
-    gsap.to(".event-card", {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.2,
-        scrollTrigger: {
-            trigger: ".horizontal-section",
-            start: "top 70%"
-        }
-    });
-    
-    // Re-bind hover effects
-    document.querySelectorAll(".btn-animate").forEach(btn => {
-        btn.addEventListener("mouseenter", () => gsap.to(btn, { scale: 1.1, duration: 0.25 }));
-        btn.addEventListener("mouseleave", () => gsap.to(btn, { scale: 1, duration: 0.25 }));
-    });
-
-    ScrollTrigger.refresh();
-}
-
-// Start the fetch process
-fetchEvents();
-
     <style>
         body {
             margin: 0;
@@ -281,5 +185,6 @@ fetchEvents();
 
 </body>
 </html>
+
 
 
